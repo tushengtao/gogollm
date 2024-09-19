@@ -1,0 +1,20 @@
+.container {
+  padding-top: 80px;
+}
+.homepage {
+  padding: 24px;
+}
+
+.chartsContainer {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;  /* 当空间不足时换行 */
+  gap: 24px;
+}
+
+.chartCard {
+  flex: 1;
+  max-width: 48%;   /* 最大宽度限制 */
+  min-width: 300px; /* 最小宽度，防止过小 */
+  overflow-x: auto; /* 超出时允许水平滚动 */
+}

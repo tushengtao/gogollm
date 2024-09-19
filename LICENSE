@@ -1,0 +1,24 @@
+# GoGoLLM Open Source License
+The GoGoLLM project is licensed under the Apache License 2.0, subject to the following additional conditions:
+1. **Commercial Use**:
+   - GoGoLLM is permitted for commercial use. You may use GoGoLLM as a "backend-as-a-service" for your applications or as an integrated component within an enterprise solution. However, you must obtain a commercial license from the producer if the following conditions are met:
+     a. **Multi-tenant SaaS Offering**: You may not use GoGoLLM source code to operate a multi-tenant SaaS offering that competes with GoGoLLM without explicit written authorization from the GoGoLLM team.
+     b. **Brand and Copyright Notices**: You must not remove or alter the GoGoLLM logo or copyright notices from any part of the software or its documentation.
+   - For inquiries regarding commercial licensing, please contact tushengtao1014@gmail.com.
+2. **Contributor Agreement**:
+   - As a contributor to GoGoLLM, you agree that your contributed code:
+     a. May be subject to changes in the open-source agreement, which may be made more restrictive or permissive by the producer.
+     b. Can be used for commercial purposes, such as the GoGoLLM cloud services.
+All other rights and restrictions adhere to the Apache License 2.0. For more detailed information, please refer to the full text of the Apache License 2.0.
+The user interface design of this product is protected by design patents.
+© [2024] [GoGoLLM].
+---
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+    http://www.apache.org/licenses/LICENSE-2.0
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.

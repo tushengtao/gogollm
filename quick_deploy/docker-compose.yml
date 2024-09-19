@@ -1,0 +1,109 @@
+networks:
+  gogollm_network:
+    name: gogollm_network
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.10.10.0/24
+
+
+
+volumes:
+  gogollm_postgresql:
+    name: gogollm_postgresql
+  gogollm_redis:
+    name: gogollm_redis
+  gogollm_backend:
+    name: gogollm_backend
+  gogollm_ui_dist:
+    name: gogollm_ui_dist
+
+services:
+  gogollm_postgresql:
+    image: pgvector/pgvector:pg16
+    container_name: gogollm_postgresql
+    restart: always
+    environment:
+      POSTGRES_USER: gogollm
+      POSTGRES_PASSWORD: gogollm123456
+      POSTGRES_DB: gogollm
+      TZ: Asia/Shanghai
+    volumes:
+      - gogollm_postgresql:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - gogollm_network
+    healthcheck:
+      test: pg_isready -U gogollm
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  gogollm_redis:
+    image: redis:6.0
+    container_name: gogollm_redis
+    volumes:
+      - gogollm_redis:/data
+    command: redis-server --requirepass gogollm_redis_123456 --appendonly yes
+    ports:
+      - "6379:6379"
+    restart: always
+    environment:
+      - TZ=Asia/Shanghai
+    networks:
+      - gogollm_network
+
+  gogollm_backend:
+    container_name: gogollm_backend
+    build:
+      context: ../
+      dockerfile: backend/backend.dockerfile
+      args:
+        - NO_CACHE=true
+    restart: always
+    environment:
+      - TZ=Asia/Shanghai
+    depends_on:
+      - gogollm_postgresql
+      - gogollm_redis
+    volumes:
+      - gogollm_backend:/gogollm/backend
+    networks:
+      - gogollm_network
+
+    command:
+      - sh
+      - -c
+      - |
+        python quick_deploy/init_db_sql.py
+        uvicorn backend.main:app --host 0.0.0.0 --port 9116
+
+
+  gogollm_ui_builder:
+    container_name: gogollm_ui_builder
+    build:
+      context: ../
+      dockerfile: ui/ui.dockerfile
+    volumes:
+      - gogollm_ui_dist:/gogollm/ui/dist
+    networks:
+      - gogollm_network
+
+  gogollm_ui_nginx:
+    image: nginx:latest
+    container_name: gogollm_nginx
+    ports:
+      - "80:80"
+    restart: always
+    environment:
+      - TZ=Asia/Shanghai
+    depends_on:
+      - gogollm_ui_builder
+      - gogollm_backend
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - gogollm_ui_dist:/usr/share/nginx/html/gogollm_ui
+    networks:
+      - gogollm_network
