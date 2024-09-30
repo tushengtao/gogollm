@@ -48,7 +48,7 @@
 ### 🎮 在线体验
 由于目前未备案，申请入群可加入开发者内测体验，扫码加入微信群：
 
-<img src="https://gogollm.com/img/wechat_group.jpg" alt="GoGoLLM Wechat Group" width="200" height="280" style="display: inline-block; background-color: white;">
+<img src="https://www.gogollm.com/img/wechat_group.jpg" alt="GoGoLLM Wechat Group" width="200" height="280" style="display: inline-block; background-color: white;">
 
 
 ***
