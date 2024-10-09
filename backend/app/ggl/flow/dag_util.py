@@ -106,6 +106,8 @@ def get_root_node(flow_dag):
         for successor in successors:
             if len(flow_dag['nodes_info'][successor]['predecessors']) == 1:
                 roots.append(node)
+    # 去重
+    roots = list(set(roots))
     return roots
 
 

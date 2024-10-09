@@ -12,19 +12,25 @@ load_dotenv()
 
 class APIKeyRotator:
     def __init__(self, api_keys):
-        self.api_keys = api_keys
+        # 确保api_keys是一个列表，如果只有一个key或者为空，将其转换成单元素列表
+        self.api_keys = api_keys if isinstance(api_keys, list) and api_keys else [api_keys]
         self.current_index = 0
 
     def get_next_key(self):
+        # 检查是否有可用的key
+        if not self.api_keys:
+            raise ValueError("No API keys available")
         key = self.api_keys[self.current_index]
+        # 更新索引，确保循环使用key
         self.current_index = (self.current_index + 1) % len(self.api_keys)
         return key
 
 
-# 定义一个函数，根据环境变量名称获取并轮询API key
+# 根据环境变量名称获取并轮询API key
 def get_api_key_rotator(env_var_name):
     api_keys_str = os.getenv(env_var_name)
-    api_keys = api_keys_str.split(',') if api_keys_str else []
+    # 如果api_keys_str为空或者没有逗号分隔，则将其转换为单元素列表
+    api_keys = api_keys_str.split(',') if api_keys_str and ',' in api_keys_str else [api_keys_str]
     return APIKeyRotator(api_keys)
 
 
