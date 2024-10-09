@@ -31,6 +31,7 @@ export const ElasticSearchAgentNode: React.FC = (node: any) => {
         const use_unified_llm_gateway = initNodeData.use_unified_llm_gateway || false;
         const model_name = initNodeData.model_name || 'deepseek-chat';
         const return_direct = initNodeData.return_direct || false;
+        const elasticsearch_retrieval_count = initNodeData.elasticsearch_retrieval_count || 3;
         const elasticsearch_result_deal_code = initNodeData.elasticsearch_result_deal_code || '';
         const node_carry_history_msg = initNodeData.node_carry_history_msg || false;
         return {
@@ -46,6 +47,7 @@ export const ElasticSearchAgentNode: React.FC = (node: any) => {
             model_name,
             use_unified_llm_gateway,
             return_direct,
+            elasticsearch_retrieval_count,
             elasticsearch_result_deal_code,
             node_carry_history_msg,
             nodeName,

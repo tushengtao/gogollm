@@ -29,6 +29,7 @@ class ElasticSearchSearchTool(BaseTool):
         app_id = self.extra_node_data["app_id"]
         app_name = self.extra_node_data["app_name"]
         elasticsearch_result_deal_code = self.extra_node_data["elasticsearch_result_deal_code"]
+        elasticsearch_retrieval_count = self.extra_node_data["elasticsearch_retrieval_count"]
 
         start_time = time.time()
         # 1. 检索字段代码预处理 获取检索字段的关键词
@@ -107,7 +108,7 @@ class ElasticSearchSearchTool(BaseTool):
                     "must": []
                 }
             },
-            "size": 3  # TODO 前台可配置
+            "size": elasticsearch_retrieval_count
         }
         retrieve_field_dsl_result = {}  # key:字段名  value: [dsl]
         with concurrent.futures.ThreadPoolExecutor() as executor:
@@ -116,28 +117,27 @@ class ElasticSearchSearchTool(BaseTool):
                 field_name = item['name']
                 retrieve_field_similarity_list = retrieve_field_similarity_result[field_name]
                 log.info(f"检索字段-根据相似性阈值分数过滤后的列表: {field_name}: {retrieve_field_similarity_list}")
-                if len(retrieve_field_similarity_list) > 0:
-                    genertate_field_dsl_code = item['genertate_field_dsl_code']
+                genertate_field_dsl_code = item['genertate_field_dsl_code']
 
-                    langfuse_handler = CallbackHandler(session_id=session_id,
-                                                       user_id=user_id,
-                                                       trace_name=str(app_id) + '_' +
-                                                                  app_name + '_' +
-                                                                  'field_dsl_generate' + '_' + field_name,
-                                                       timeout=6)
-                    chain_config = {
-                        "callbacks": [langfuse_handler],
-                        "configurable": {"session_id": session_id},
-                        "app_type": 0  # 智能体
-                    }
-                    variables = {
-                        "question": question,
-                        "field_name": field_name,
-                        "retrieve_field_similarity_list": retrieve_field_similarity_list,
-                        "chain_config": chain_config
-                    }
-                    future = executor.submit(genertate_field_dsl_deal, genertate_field_dsl_code, variables)
-                    futures.append(future)
+                langfuse_handler = CallbackHandler(session_id=session_id,
+                                                   user_id=user_id,
+                                                   trace_name=str(app_id) + '_' +
+                                                              app_name + '_' +
+                                                              'field_dsl_generate' + '_' + field_name,
+                                                   timeout=6)
+                chain_config = {
+                    "callbacks": [langfuse_handler],
+                    "configurable": {"session_id": session_id},
+                    "app_type": 0  # 智能体
+                }
+                variables = {
+                    "question": question,
+                    "field_name": field_name,
+                    "retrieve_field_similarity_list": retrieve_field_similarity_list,
+                    "chain_config": chain_config
+                }
+                future = executor.submit(genertate_field_dsl_deal, genertate_field_dsl_code, variables)
+                futures.append(future)
 
             for future in concurrent.futures.as_completed(futures):
                 result = future.result()
@@ -155,8 +155,6 @@ class ElasticSearchSearchTool(BaseTool):
         if len(query_dsl["query"]["bool"]["must"]) > 0:
             es_search_result = es_search(elasticsearch_index_name, query_dsl)
             if len(es_search_result) < 1:
-                # TODO 告诉用户 智能搜索理解到的查询意图 将top one的各个字段的检索召回结果返回给用户 进一步说明
-                # TODO 说明目前意图解析出的查询条件
                 return "抱歉我未检索到，我完全理解您的搜索意图，但是目前无法检索到，可以尝试减少搜索条件、换个搜索词试试？"
             else:
                 with concurrent.futures.ThreadPoolExecutor() as executor:
@@ -179,6 +177,7 @@ class ElasticSearchSearchTool(BaseTool):
                     self.extra_node_data["elasticsearch_index_name"] = tool.get("elasticsearch_index_name")
                     self.extra_node_data["structured_retrieval_table_name"] = tool.get("structured_retrieval_table_name", '')
                     self.extra_node_data["structuredFieldRetrievalConfig"] = tool.get("structuredFieldRetrievalConfig", [])
+                    self.extra_node_data["elasticsearch_retrieval_count"] = tool.get("elasticsearch_retrieval_count", 3)
                     self.extra_node_data["elasticsearch_result_deal_code"] = tool.get("elasticsearch_result_deal_code", '')
                     break
         else:
