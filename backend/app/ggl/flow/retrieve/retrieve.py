@@ -41,6 +41,8 @@ def perform_search(options, retrieval_method):
     elif "es" in retrieval_method:
         result_json_list = es_search(options['content'], options['elasticsearch_index_name'], options['field_name'],
                                      100)
+    elif "none" == retrieval_method:
+        result_json_list = []
     else:
         raise ValueError(f"Invalid retrieval method: {retrieval_method}")
     return result_json_list
