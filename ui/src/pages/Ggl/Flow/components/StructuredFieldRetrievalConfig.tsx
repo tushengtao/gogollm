@@ -14,6 +14,7 @@ const StructuredFieldRetrievalConfig: React.FC<{
     { label: '语义+重排', value: 'vector+reranker' },
     { label: 'ES', value: 'es' },
     { label: 'ES+重排', value: 'es+reranker' },
+    { label: '不检索召回', value: 'none' }
   ];
 
   const add = () => {

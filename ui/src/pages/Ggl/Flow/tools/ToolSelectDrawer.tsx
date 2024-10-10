@@ -62,6 +62,7 @@ const ToolSelectDrawer: FC<{
             structured_retrieval_table_name: '',
             elasticsearch_index_name: '',
             structuredFieldRetrievalConfig: [],
+            elasticsearch_retrieval_count:3,
             elasticsearch_result_deal_code: '',
             icon:  "ElasticSearchIcon",
         }

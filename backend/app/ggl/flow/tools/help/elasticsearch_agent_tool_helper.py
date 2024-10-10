@@ -88,7 +88,7 @@ def es_search(index_name, query, size=3) -> list[Any]:
     if check_size_in_dsl(query, size):
         return es_dsl_search(index_name, query)
     else:
-        raise Exception("check_size_in_es_dsl_string Exception: " + query)
+        raise Exception("check_size_in_es_dsl_string Exception: " + str(query))
 
 
 def sql_to_dsl_string(sql) -> str:

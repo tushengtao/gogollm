@@ -8,6 +8,7 @@ from backend.app.ggl.flow.tools.all_tools import all_tools
 from backend.app.ggl.langchain.llm.ChatModel import ChatModel
 from backend.app.ggl.langchain.memory.PostgresChatMessageHistory import PostgresChatMessageHistory
 from backend.app.ggl.langchain.memory.RunnableWithMessageHistory import RunnableWithMessageHistory
+from backend.app.ggl.langchain.output.ReActSingleInputOutputParser import ReActSingleInputOutputParser
 from backend.database.db_sql import sync_db_session
 
 
@@ -91,7 +92,8 @@ New input: {{question}}
     else:
         llm = ChatModel(model_config).get_llm()
 
-    agent = create_react_agent(llm=llm, tools=llm_tools, prompt=prompt)
+    output_parser = ReActSingleInputOutputParser()
+    agent = create_react_agent(llm=llm, tools=llm_tools, prompt=prompt, output_parser=output_parser)
     agent_executor = AgentExecutor(agent=agent, tools=llm_tools, handle_parsing_errors=True)
 
     node_carry_history_msg = nodeData['node_carry_history_msg']

@@ -1,8 +1,9 @@
 import React, {useEffect, useState} from 'react';
-import {Button, Form, Input, Modal, Select, Switch} from 'antd';
+import {Button, Form, Input, InputNumber, Modal, Select, Switch} from 'antd';
 import StructuredFieldRetrievalConfig from "@/pages/Ggl/Flow/components/StructuredFieldRetrievalConfig";
 import CodeEditorModal from "@/pages/Ggl/Flow/components/CodeEditorModal";
 import FullScreenEditIcon from "@/components/Icon/FullScreenEditIcon";
+import {DownOutlined, UpOutlined} from "@ant-design/icons";
 
 // @ts-ignore
 const ElasticsearchSearchForm = ({editingTool, onValuesChange, setEditingTool}) => {
@@ -131,6 +132,40 @@ const ElasticsearchSearchForm = ({editingTool, onValuesChange, setEditingTool}) 
                         buttonName="添加 ElasticSearch 检索字段"
                     ></StructuredFieldRetrievalConfig>
                 </Modal>
+            </Form.Item>
+
+            <Form.Item label="ES检索数量" name="elasticsearch_retrieval_count">
+                <InputNumber
+                    value={editingTool.elasticsearch_retrieval_count}
+                    controls={{
+                        upIcon: (
+                            <UpOutlined
+                                onClick={() => {
+                                    setEditingTool({
+                                        ...editingTool,
+                                        elasticsearch_retrieval_count: editingTool.elasticsearch_retrieval_count + 1,
+                                    })
+                                }}
+                                style={{ fontSize: '12px', color: '#1677ff' }}
+                            />
+                        ),
+                        downIcon: (
+                            <DownOutlined
+                                onClick={() => {
+                                    setEditingTool({
+                                        ...editingTool,
+                                        elasticsearch_retrieval_count: editingTool.elasticsearch_retrieval_count - 1,
+                                    })
+                                }}
+                                style={{ fontSize: '12px', color: '#1677ff' }}
+                            />
+                        ),
+                    }}
+                    defaultValue={3}
+                    min={1}
+                    max={100}
+                    style={{ width: 80, height: 35 }}
+                />
             </Form.Item>
 
             <Form.Item label="搜索结果处理" name="elasticsearch_result_deal_code">

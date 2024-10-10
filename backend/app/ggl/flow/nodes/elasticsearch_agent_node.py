@@ -9,6 +9,7 @@ from backend.app.ggl.flow.tools.elasticsearch_search_tool import ElasticSearchSe
 from backend.app.ggl.langchain.llm.ChatModel import ChatModel
 from backend.app.ggl.langchain.memory.PostgresChatMessageHistory import PostgresChatMessageHistory
 from backend.app.ggl.langchain.memory.RunnableWithMessageHistory import RunnableWithMessageHistory
+from backend.app.ggl.langchain.output.ReActSingleInputOutputParser import ReActSingleInputOutputParser
 from backend.database.db_sql import sync_db_session
 
 
@@ -92,7 +93,8 @@ New input: {{question}}
         llm = ChatOpenAI(**model_config)
     else:
         llm = ChatModel(model_config).get_llm()
-    agent = create_react_agent(llm=llm, tools=tools, prompt=prompt)
+    output_parser = ReActSingleInputOutputParser()
+    agent = create_react_agent(llm=llm, tools=tools, prompt=prompt, output_parser=output_parser)
     agent_executor = AgentExecutor(agent=agent, tools=tools, handle_parsing_errors=True)
 
     node_carry_history_msg = nodeData['node_carry_history_msg']
