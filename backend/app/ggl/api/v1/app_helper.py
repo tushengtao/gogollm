@@ -37,7 +37,7 @@ async def llm_with_tool_astream(chains, question, config):
                 yield str(chunk).encode("utf-8")
 
 
-async def app_astream_events(chains, question, config):
+async def open_api_astream_events(chains, question, config):
     chains_str = str(chains)
     is_openai_tools_agent = False
     if "agent_scratchpad" in chains_str:
