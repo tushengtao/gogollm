@@ -37,6 +37,19 @@ async def llm_with_tool_astream(chains, question, config):
                 yield str(chunk).encode("utf-8")
 
 
+async def app_astream_events(chains, question, config):
+    chains_str = str(chains)
+    is_openai_tools_agent = False
+    if "agent_scratchpad" in chains_str:
+        is_openai_tools_agent = True
+    if is_openai_tools_agent:
+        async for event in chains.astream_events(question, config=config, version="v2"):
+                yield str(event).encode("utf-8")
+    else:
+        async for chunk in chains.astream(question, config=config):
+            yield str(chunk).encode("utf-8")
+
+
 async def react_agent_astream(chains, question, config):
     final_answer_streaming = AgentFinalAnswerStreaming(answer_prefix_tokens=["Final", "Answer", ":"])
     async for event in chains.astream_events(question, config=config, version="v2"):

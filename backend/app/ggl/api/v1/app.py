@@ -12,7 +12,8 @@ from sqlalchemy import func
 from sqlalchemy import select
 from openai import OpenAI
 from backend.app.admin.model import Dept, User
-from backend.app.ggl.api.v1.app_helper import llm_with_tool_astream, react_agent_astream, structured_chat_agent_astream
+from backend.app.ggl.api.v1.app_helper import llm_with_tool_astream, react_agent_astream, structured_chat_agent_astream, \
+    app_astream_events
 from backend.app.ggl.model.ggl_app import App
 from backend.app.ggl.model.ggl_app_dept import ggl_app_dept
 from backend.app.ggl.model.ggl_chat_session import ChatSession
@@ -139,7 +140,7 @@ async def openapi_chat(request: Request, obj: OpenApiChatParam):
         "app_type": app_type
     }
     if is_streaming:
-        return StreamingResponse(astream(flow_chain, {"question": question}, config),
+        return StreamingResponse(app_astream_events(flow_chain, {"question": question}, config),
                                  media_type="text/event-stream")
     else:
         return StreamingResponse(invoke(flow_chain, {"question": question}, config),
